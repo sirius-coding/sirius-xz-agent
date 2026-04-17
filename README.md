@@ -66,7 +66,7 @@ export SPRING_DATASOURCE_PASSWORD=postgres
 
 ## pgvector 集成测试
 
-本地或云服务器上都可以直接起 PostgreSQL + pgvector。默认只绑定到 `127.0.0.1`，避免把数据库直接暴露到公网：
+本地或云服务器上都可以直接起 PostgreSQL + pgvector：
 
 ```bash
 docker compose -f docker/docker-compose.pgvector.yml up -d
@@ -78,23 +78,6 @@ docker compose -f docker/docker-compose.pgvector.yml up -d
 ./scripts/pgvector-up.sh
 ```
 
-通过云服务器跑真实 JDBC + pgvector 集成测试：
-
-```bash
-./scripts/run-cloud-integration.sh
-```
-
-GitHub Actions 也支持同一条远程 smoke（手动触发）：
-
-- workflow: `.github/workflows/cloud-integration.yml`
-- trigger: `workflow_dispatch`
-- required secrets:
-- `SIRIUS_CLOUD_SSH_TARGET`: 云服务器 IP 或域名（示例：`223.109.140.60`）
-- `SIRIUS_CLOUD_SSH_PRIVATE_KEY`: 用于云服务器的 SSH 私钥内容
-- `SIRIUS_CLOUD_SSH_KNOWN_HOSTS`: `known_hosts` 对应条目
-
-这个 workflow 默认不在 `push`/`pull_request` 自动运行，目的是降低密钥暴露面和远程环境误触发风险。
-
 验证扩展和基础向量查询：
 
 ```bash
@@ -103,11 +86,9 @@ GitHub Actions 也支持同一条远程 smoke（手动触发）：
 
 ### 对外端口
 
-- `22/tcp`：SSH
-- `5432/tcp`：默认不需要对外开放。pgvector 默认只绑定 `127.0.0.1`，通过 SSH 隧道访问。
+- `5432/tcp`：PostgreSQL + `pgvector`
 
 如果你需要改端口，启动前设置 `PGVECTOR_PORT`，例如 `PGVECTOR_PORT=15432 ./scripts/pgvector-up.sh`。
-如果你明确要改监听地址，再设置 `PGVECTOR_BIND_HOST`，例如 `PGVECTOR_BIND_HOST=0.0.0.0`。
 
 ## 启动
 
