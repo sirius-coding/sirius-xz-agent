@@ -35,4 +35,4 @@ fi
 cd "${ROOT_DIR}"
 SIRIUS_CLOUD_IT_ENABLED=true \
 SIRIUS_CLOUD_IT_PORT="${LOCAL_PORT}" \
-mvn -q -Dmaven.repo.local=/tmp/codex-m2 -Dtest=CloudPgVectorIntegrationTest test
+mvn -q -Dmaven.repo.local=/tmp/codex-m2 -Dtest=CloudApiIntegrationTest test
