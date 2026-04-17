@@ -84,6 +84,17 @@ docker compose -f docker/docker-compose.pgvector.yml up -d
 ./scripts/run-cloud-integration.sh
 ```
 
+GitHub Actions 也支持同一条远程 smoke（手动触发）：
+
+- workflow: `.github/workflows/cloud-integration.yml`
+- trigger: `workflow_dispatch`
+- required secrets:
+- `SIRIUS_CLOUD_SSH_TARGET`: 云服务器 IP 或域名（示例：`223.109.140.60`）
+- `SIRIUS_CLOUD_SSH_PRIVATE_KEY`: 用于云服务器的 SSH 私钥内容
+- `SIRIUS_CLOUD_SSH_KNOWN_HOSTS`: `known_hosts` 对应条目
+
+这个 workflow 默认不在 `push`/`pull_request` 自动运行，目的是降低密钥暴露面和远程环境误触发风险。
+
 验证扩展和基础向量查询：
 
 ```bash
