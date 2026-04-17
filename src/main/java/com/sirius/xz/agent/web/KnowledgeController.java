@@ -2,10 +2,12 @@ package com.sirius.xz.agent.web;
 
 import com.sirius.xz.agent.domain.KnowledgeDocument;
 import com.sirius.xz.agent.service.KnowledgeBase;
+import com.sirius.xz.agent.service.KnowledgeIngestionService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,9 +21,16 @@ import org.springframework.web.bind.annotation.RestController;
 public class KnowledgeController {
 
     private final KnowledgeBase knowledgeBase;
+    private final KnowledgeIngestionService knowledgeIngestionService;
 
     public KnowledgeController(KnowledgeBase knowledgeBase) {
+        this(knowledgeBase, null);
+    }
+
+    @Autowired
+    public KnowledgeController(KnowledgeBase knowledgeBase, KnowledgeIngestionService knowledgeIngestionService) {
         this.knowledgeBase = knowledgeBase;
+        this.knowledgeIngestionService = knowledgeIngestionService;
     }
 
     @GetMapping("/documents")
@@ -44,6 +53,9 @@ public class KnowledgeController {
             request.content(),
             request.tags()
         );
+        if (knowledgeIngestionService != null) {
+            return knowledgeIngestionService.upsert(document);
+        }
         knowledgeBase.upsert(document);
         return document;
     }
